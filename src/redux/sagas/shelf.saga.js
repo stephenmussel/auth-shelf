@@ -3,7 +3,7 @@ import { takeLatest, put } from 'redux-saga/effects';
 import shelfReducer from '../reducers/shelf.reducer';
 
 
-function* deleteItem(){
+function* deleteItem(action){
     try {
         const itemId = action.payload
         yield axios.delete(`/api/shelf/${itemId}`)

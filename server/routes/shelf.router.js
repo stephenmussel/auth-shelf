@@ -42,8 +42,10 @@ router.delete('/:id', rejectUnauthenticated, (req, res) => {
   // endpoint functionality
   console.log(req.params.id);
   const itemId = req.params.id;
-  let queryText = `DELETE * FROM "item" WHERE "id" = $1;`;
-  pool.query(queryText, [itemId]).then(result => {
+  let queryText = `DELETE FROM "item" 
+  WHERE "id" = $1
+  AND "user_id" = $2;`;
+  pool.query(queryText, [itemId, req.user.id]).then(result => {
     res.sendStatus(201);
   }).catch(error => {
     console.log(`Error in shelf /DELETE:`, error);
@@ -74,6 +76,7 @@ router.put('/:id', (req, res) => {
  */
 router.get('/count', (req, res) => {
   // endpoint functionality
+  //const queryText = `SELECT ;`;
 });
 
 /**

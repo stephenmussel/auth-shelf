@@ -22,13 +22,17 @@ function ShelfPage() {
   }, []);
 
   const getItems = () => {
-    //dispatach to get items from item reducer here 
+    //dispatch to get items from item reducer here 
     dispatch({type: 'GET_SHELF'})
   }
 
   const postItem = () => {
     console.log(itemDescription)
-    dispatch({ type: 'POST_ITEM', payload: {itemDescription: itemDescription, imageURL: imageURL}});
+    if (imageURL === "" || itemDescription === ""){
+      alert('put info in the inputs or whatever dude idk im just doing my job, i have a lot of stuff going on right now i really dont want to like bother you or anything and i dont mean to come off as rude its just i walked outside this morning and stepped/slipped on dog poop and got it all over my brand new bright pink leather pants and its just been a lot to deal with id been waiting for those pants to come in the mail for several months because of the recent supply chain issues and when i took them into the leather pants repair store the guy told me he specifically doesnt work with leather that has dog poop on it because of an incident from his childhood that he didnt feel comfortable getting into which is completely understandable i barely feel like i can talk about this but here i am just spilling my guts out to some random user, ugh classic me! lol')
+    } else {
+      dispatch({ type: 'POST_ITEM', payload: {itemDescription: itemDescription, imageURL: imageURL}});
+    }
   }
   const deleteItem = (event) => {
     console.log(event.target.value)
@@ -43,6 +47,7 @@ function ShelfPage() {
         <input placeholder="Link to Image" type='text' value={imageURL} onChange={(event) => setImageURL(event.target.value)} />
         <input placeholder="Description" type='text' value={itemDescription} onChange={(event) => setItemDescription(event.target.value)} />
         <input type='submit' value='Add New Item' />
+      </form>
         {shelfItems.map((item) =>(
           <div>
             <img src={item.image_url}/>
@@ -50,7 +55,7 @@ function ShelfPage() {
             <button value={item.id} onClick={(event) => deleteItem(event)}>Delete</button>
           </div>
         ))}
-      </form>
+      
     </div>
   );
 }
