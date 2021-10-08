@@ -6,8 +6,14 @@ const {rejectUnauthenticated} = require('../modules/authentication-middleware');
 /**
  * Get all of the items on the shelf
  */
-router.get('/', (req, res) => {
-  res.sendStatus(200); // For testing only, can be removed
+router.get('/', rejectUnauthenticated, (req, res) => {
+  let queryText = `SELECT * FROM "item";`;
+  pool.query(queryText)
+  .then(result => {
+    res.send(result.rows)
+  }).catch(error => {
+    console.log(error)
+  })
 });
 
 /**
@@ -32,8 +38,17 @@ router.post('/', rejectUnauthenticated, (req, res) => {
 /**
  * Delete an item if it's something the logged in user added
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', rejectUnauthenticated, (req, res) => {
   // endpoint functionality
+  console.log(req.params.id);
+  const itemId = req.params.id;
+  let queryText = `DELETE * FROM "item" WHERE "id" = $1;`;
+  pool.query(queryText, [itemId]).then(result => {
+    res.sendStatus(201);
+  }).catch(error => {
+    console.log(`Error in shelf /DELETE:`, error);
+    res.sendStatus(500);
+  });
 });
 
 /**
@@ -41,6 +56,16 @@ router.delete('/:id', (req, res) => {
  */
 router.put('/:id', (req, res) => {
   // endpoint functionality
+  const queryText =  `UPDATE "items"
+   SET "description" = $1, image_url = $2
+   WHERE "id" = $3;`;
+   pool.query(queryText,
+    [req.body.description, req.body.image_url, req.params.id]).then(result => {
+      res.sendStatus(201);
+    }).catch(error => {
+      console.log(`Error in shelf /PUT:`, error);
+      res.sendStatus(500);
+    })
 });
 
 /**
@@ -56,6 +81,13 @@ router.get('/count', (req, res) => {
  */
 router.get('/:id', (req, res) => {
   // endpoint functionality
+  const queryText = `SELECT * FROM "items" WHERE "id" = $1;`;
+  pool.query(queryText, req.params.id).then( result => {
+    res.send(result.rows[0]);
+  }).catch(error => {
+    console.log('Error in getting specific item', error);
+    res.sendStatus(500);
+  })
 });
 
 module.exports = router;
